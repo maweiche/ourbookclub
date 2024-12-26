@@ -1,0 +1,111 @@
+{
+  "users": [
+    {
+      "id": "u1",
+      "name": "Jane Smith",
+      "email": "jane@example.com",
+      "profilePicture": "/avatars/jane.jpg",
+      "readingPreferences": ["Fiction", "Mystery", "Science Fiction"],
+      "groupIds": ["g1", "g2"]
+    },
+    {
+      "id": "u2",
+      "name": "John Doe",
+      "email": "john@example.com",
+      "readingPreferences": ["Non-fiction", "Biography"],
+      "groupIds": ["g1"]
+    }
+  ],
+  "groups": [
+    {
+      "id": "g1",
+      "name": "Mystery Lovers Book Club",
+      "description": "We love solving mysteries one book at a time!",
+      "adminIds": ["u1"],
+      "memberIds": ["u1", "u2"],
+      "currentBookId": "b1",
+      "password": "mysteryloves123",
+      "meetingSchedule": [
+        {
+          "id": "m1",
+          "groupId": "g1",
+          "date": "2024-12-30T18:00:00Z",
+          "location": "Zoom",
+          "description": "December Meeting - Discussion of 'The Silent Patient'",
+          "attendees": ["u1", "u2"]
+        }
+      ],
+      "suggestedBooks": ["b2", "b3"],
+      "readingHistory": [
+        {
+          "bookId": "b4",
+          "completedDate": "2024-11-30"
+        }
+      ]
+    }
+  ],
+  "books": [
+    {
+      "id": "b1",
+      "title": "The Silent Patient",
+      "author": "Alex Michaelides",
+      "coverImage": "/covers/silent-patient.jpg",
+      "totalPages": 336,
+      "votes": [
+        {
+          "userId": "u1",
+          "value": 1
+        }
+      ],
+      "ratings": [
+        {
+          "userId": "u2",
+          "rating": 4,
+          "review": "Great plot twists!"
+        }
+      ]
+    },
+    {
+      "id": "b2",
+      "title": "The Thursday Murder Club",
+      "author": "Richard Osman",
+      "coverImage": "/covers/thursday-club.jpg",
+      "totalPages": 382,
+      "votes": [],
+      "ratings": []
+    }
+  ],
+  "readingProgress": [
+    {
+      "userId": "u1",
+      "bookId": "b1",
+      "groupId": "g1",
+      "currentPage": 156,
+      "lastUpdated": "2024-12-24T15:30:00Z"
+    },
+    {
+      "userId": "u2",
+      "bookId": "b1",
+      "groupId": "g1",
+      "currentPage": 242,
+      "lastUpdated": "2024-12-25T20:15:00Z"
+    }
+  ],
+  "discussions": [
+    {
+      "id": "d1",
+      "bookId": "b1",
+      "groupId": "g1",
+      "chapter": 1,
+      "prompt": "What are your initial thoughts about Alicia's silence?",
+      "comments": [
+        {
+          "id": "c1",
+          "userId": "u1",
+          "content": "I think there's more to her silence than trauma...",
+          "timestamp": "2024-12-24T16:00:00Z"
+        }
+      ]
+    }
+  ]
+}
