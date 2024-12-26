@@ -1,4 +1,5 @@
 // /src/components/Layout/Sidebar.tsx
+'use client'
 import { useUserStore } from '../../lib/stores/userStore'
 import { useGroupStore } from '../../lib/stores/groupStore'
 
