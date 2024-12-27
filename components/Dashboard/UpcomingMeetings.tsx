@@ -1,29 +1,41 @@
-// /src/components/Dashboard/UpcomingMeetings.tsx
+// src/components/Dashboard/UpcomingMeetings.tsx
+'use client'
+
 import { useGroupStore } from '@/lib/stores/groupStore'
+import { useUserStore } from '@/lib/stores/userStore'
 
 const UpcomingMeetings = () => {
-  const currentGroup = useGroupStore((state) => state.currentGroup)
+  const activeGroupId = useUserStore(state => state.activeGroupId)
+  const currentGroup = useGroupStore(state => 
+    state.groups.get(activeGroupId || '')
+  )
 
   const upcomingMeetings = currentGroup?.meetingSchedule
-    .filter((meeting) => new Date(meeting.date) > new Date())
+    .filter(meeting => new Date(meeting.date) > new Date())
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-    .slice(0, 3)
+    .slice(0, 3) || []
 
   return (
-    <div className="rounded-lg bg-white p-6 shadow">
-      <h2 className="mb-4 text-xl font-semibold">Upcoming Meetings</h2>
-      {upcomingMeetings?.length ? (
+    <div className="bg-white rounded-lg shadow p-6">
+      <h2 className="text-xl font-semibold mb-4">Upcoming Meetings</h2>
+      {upcomingMeetings.length > 0 ? (
         <div className="space-y-4">
-          {upcomingMeetings.map((meeting) => (
-            <div key={meeting.id} className="rounded-md border p-4">
-              <div className="flex items-start justify-between">
+          {upcomingMeetings.map(meeting => (
+            <div key={meeting.id} className="border rounded-md p-4">
+              <div className="flex justify-between items-start">
                 <div>
                   <h3 className="font-medium">{meeting.description}</h3>
                   <p className="text-sm text-gray-600">{meeting.location}</p>
                 </div>
-                <div className="text-sm text-gray-500">
-                  {new Date(meeting.date).toLocaleDateString()}
-                </div>
+                <time className="text-sm text-gray-500">
+                  {new Date(meeting.date).toLocaleDateString(undefined, {
+                    weekday: 'short',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit'
+                  })}
+                </time>
               </div>
               <div className="mt-2 text-sm text-gray-500">
                 {meeting.attendees.length} attending

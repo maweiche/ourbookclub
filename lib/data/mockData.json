@@ -42,6 +42,32 @@
           "completedDate": "2024-11-30"
         }
       ]
+    },
+    {
+      "id": "g2",
+      "name": "Sci-Fi Enthusiasts",
+      "description": "Exploring the galaxy one book at a time!",
+      "adminIds": ["u1"],
+      "memberIds": ["u1"],
+      "currentBookId": "b3",
+      "password": "scifilove123",
+      "meetingSchedule": [
+        {
+          "id": "m2",
+          "groupId": "g2",
+          "date": "2025-01-15T19:00:00Z",
+          "location": "Discord",
+          "description": "January Meeting - Discussion of 'Dune'",
+          "attendees": ["u1"]
+        }
+      ],
+      "suggestedBooks": ["b1", "b4"],
+      "readingHistory": [
+        {
+          "bookId": "b2",
+          "completedDate": "2024-10-15"
+        }
+      ]
     }
   ],
   "books": [
@@ -73,6 +99,26 @@
       "totalPages": 382,
       "votes": [],
       "ratings": []
+    },
+    {
+      "id": "b3",
+      "title": "Dune",
+      "author": "Frank Herbert",
+      "coverImage": "/covers/dune.jpg",
+      "totalPages": 412,
+      "votes": [
+        {
+          "userId": "u1",
+          "value": 1
+        }
+      ],
+      "ratings": [
+        {
+          "userId": "u1",
+          "rating": 5,
+          "review": "A masterpiece of science fiction!"
+        }
+      ]
     }
   ],
   "readingProgress": [

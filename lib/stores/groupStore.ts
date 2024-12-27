@@ -20,11 +20,12 @@ export const useGroupStore = create<GroupState>((set, get) => ({
   isLoading: false,
   error: null,
 
+  // src/lib/stores/groupStore.ts
   fetchGroups: async (userGroupIds: string[]) => {
     set({ isLoading: true, error: null })
     
     try {
-      // Fetch all groups for the user
+      console.log('Fetching groups for IDs:', userGroupIds)
       const { data, error } = await api.groups.list(userGroupIds)
 
       if (error) {
@@ -32,9 +33,13 @@ export const useGroupStore = create<GroupState>((set, get) => ({
         return
       }
 
-      if (data) {
+      if (data && Array.isArray(data)) {
+        console.log('Received groups data:', data)
         const groupsMap = new Map()
-        data.forEach(group => groupsMap.set(group.id, group))
+        data.forEach(group => {
+          groupsMap.set(group.id, group)
+        })
+        
         set({ 
           groups: groupsMap,
           isLoading: false,

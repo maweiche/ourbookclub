@@ -23,13 +23,10 @@ export interface Book {
 export interface BookState {
   books: Map<string, Book>
   currentBook: Book | null
-  fetchBooks: (bookIds: string[]) => void
+  isLoading: boolean
+  error: string | null
+  fetchBooks: (bookIds: string[]) => Promise<void>
   setCurrentBook: (bookId: string) => void
   addVote: (bookId: string, userId: string, value: number) => void
-  addRating: (
-    bookId: string,
-    userId: string,
-    rating: number,
-    review?: string
-  ) => void
+  addRating: (bookId: string, userId: string, rating: number, review?: string) => void
 }

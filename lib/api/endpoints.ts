@@ -20,7 +20,11 @@ export const api = {
       method: 'GET',
       params: { id: 'u1' }
     }),
-    logout: () => apiClient('/auth/logout', { method: 'POST' }),
+    logout: () => apiClient('/users/logout', { 
+      method: 'POST',
+      // No need for actual data since we're just simulating logout
+      params: { action: 'logout' }
+    }),
   },
   // Group endpoints
   // groups: {
@@ -45,7 +49,8 @@ export const api = {
     list: (groupIds: string[]) => 
       apiClient<Group[]>('/groups', { 
         method: 'GET',
-        params: { ids: groupIds.join(',') }
+        // Pass the array directly instead of joining
+        params: { ids: groupIds } 
       }),
     get: (groupId: string) => apiClient<Group>(`/groups/${groupId}`, { method: 'GET' }),
     create: (data: Partial<Group>) => apiClient<Group>('/groups', {
@@ -60,8 +65,11 @@ export const api = {
 
   // Book endpoints
   books: {
-    list: (groupId: string) => 
-      apiClient<Book[]>(`/books?groupId=${groupId}`),
+    list: (bookIds: string[]) => 
+      apiClient<Book[]>('/books', { 
+        method: 'GET',
+        params: { ids: bookIds }
+      }),
     get: (bookId: string) => 
       apiClient<Book>(`/books/${bookId}`),
     vote: (bookId: string, userId: string, value: number) => 

@@ -6,22 +6,42 @@ class MockDatabase {
   private data: typeof initialMockData
 
   constructor() {
-    // Load initial data
+    console.log('Initial mockData:', initialMockData)
+    console.log('Groups in mockData:', initialMockData.groups)
     this.data = deepClone(initialMockData)
   }
 
-  // CRUD operations
   getData(collection: keyof typeof initialMockData, params?: any) {
+    console.log('Raw data from mockData.json:', this.data[collection])
     const data = deepClone(this.data[collection])
-    
-    if (collection === 'users' && params?.id) {
-      // For single user fetch, return the specific user
-      return data.find((user: any) => user.id === params.id)
-    }
-    
+    console.log('Data after deepClone:', data)
+  
     if (collection === 'groups' && params?.ids) {
-      const groupIds = params.ids.split(',')
-      return data.filter((group: any) => groupIds.includes(group.id))
+      // First verify we have all groups from the initial data
+      console.log('All available groups:', data.length) // Should be 2 based on your mockData.json
+
+      const groupIds = Array.isArray(params.ids) 
+        ? params.ids 
+        : typeof params.ids === 'string'
+          ? params.ids.split(',')
+          : []
+
+      console.log('Group IDs to filter:', groupIds)
+      
+      // Check the actual data structure
+      const isArray = Array.isArray(data)
+      console.log('Is data an array?', isArray)
+      
+      const filteredGroups = isArray
+        ? data.filter((group: any) => {
+            const included = groupIds.includes(group.id)
+            console.log(`Group ${group.id} included?`, included)
+            return included
+          })
+        : []
+
+      console.log('Filtered groups:', filteredGroups)
+      return filteredGroups
     }
     
     return data
@@ -33,14 +53,12 @@ class MockDatabase {
     return this.getData(collection)
   }
 
-  // Persist mock data to localStorage to maintain state across refreshes
   private persistToLocalStorage() {
     if (typeof window !== 'undefined') {
       localStorage.setItem('mockDb', JSON.stringify(this.data))
     }
   }
 
-  // Load persisted data from localStorage
   loadPersistedData() {
     if (typeof window !== 'undefined') {
       const persisted = localStorage.getItem('mockDb')
@@ -49,15 +67,11 @@ class MockDatabase {
       }
     }
   }
-
-  // Reset to initial state
-  reset() {
-    this.data = deepClone(initialMockData)
-    this.persistToLocalStorage()
-  }
 }
 
-export const mockDb = new MockDatabase()
+console.log('mockData import check:', {
+  mockData: initialMockData,
+  groupsCount: initialMockData.groups.length
+})
 
-// Initialize persisted data when module loads
-mockDb.loadPersistedData()
+export const mockDb = new MockDatabase()

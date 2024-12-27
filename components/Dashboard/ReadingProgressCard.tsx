@@ -1,49 +1,78 @@
-// /src/components/Dashboard/ReadingProgressCard.tsx
+// src/components/Dashboard/ReadingProgressCard.tsx
+'use client'
+
 import { useEffect } from 'react'
 import { useGroupStore } from '@/lib/stores/groupStore'
 import { useBookStore } from '@/lib/stores/bookStore'
 import { useUserStore } from '@/lib/stores/userStore'
 
 const ReadingProgressCard = () => {
-  const currentGroup = useGroupStore((state) => state.currentGroup)
-  const { books, fetchBooks } = useBookStore()
-  const currentUser = useUserStore((state) => state.currentUser)
+  const activeGroupId = useUserStore(state => state.activeGroupId)
+  const activeGroup = useGroupStore(state => 
+    activeGroupId ? state.groups.get(activeGroupId) : null
+  )
+  const { books, fetchBooks, isLoading } = useBookStore()
 
   useEffect(() => {
-    if (currentGroup?.currentBookId) {
-      fetchBooks([currentGroup.currentBookId])
+    const fetchCurrentBook = async () => {
+      if (activeGroup?.currentBookId) {
+        console.log('Fetching book:', activeGroup.currentBookId)
+        await fetchBooks([activeGroup.currentBookId])
+      }
     }
-  }, [currentGroup])
+    
+    fetchCurrentBook()
+  }, [activeGroup?.currentBookId, fetchBooks])
 
-  const currentBook = currentGroup?.currentBookId
-    ? books.get(currentGroup.currentBookId)
+  const currentBook = activeGroup?.currentBookId 
+    ? books.get(activeGroup.currentBookId)
     : null
 
+  console.log('Current reading state:', {
+    activeGroupId,
+    currentBookId: activeGroup?.currentBookId,
+    currentBook,
+    allBooks: Array.from(books.entries())
+  })
+
+  if (isLoading) {
+    return (
+      <div className="bg-white rounded-lg shadow p-6">
+        <h2 className="text-xl font-semibold mb-4">Current Reading</h2>
+        <div className="animate-pulse flex space-x-4">
+          <div className="w-24 h-36 bg-gray-200 rounded"></div>
+          <div className="flex-1 space-y-4">
+            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="rounded-lg bg-white p-6 shadow">
-      <h2 className="mb-4 text-xl font-semibold">Current Reading</h2>
+    <div className="bg-white rounded-lg shadow p-6">
+      <h2 className="text-xl font-semibold mb-4">Current Reading</h2>
       {currentBook ? (
-        <div>
-          <div className="flex items-start space-x-4">
-            <img
-              src={currentBook.coverImage}
-              alt={currentBook.title}
-              className="h-36 w-24 rounded object-cover"
-            />
-            <div>
-              <h3 className="font-medium">{currentBook.title}</h3>
-              <p className="text-sm text-gray-600">{currentBook.author}</p>
-              <div className="mt-4">
-                <div className="h-2.5 w-full rounded-full bg-gray-200">
-                  <div
-                    className="h-2.5 rounded-full bg-blue-600"
-                    style={{ width: '45%' }} // This would come from reading progress
-                  />
-                </div>
-                <span className="mt-1 text-sm text-gray-600">
-                  Page 150 of {currentBook.totalPages}
-                </span>
+        <div className="flex items-start space-x-4">
+          <img 
+            src={currentBook.coverImage} 
+            alt={currentBook.title}
+            className="w-24 h-36 object-cover rounded"
+          />
+          <div>
+            <h3 className="font-medium">{currentBook.title}</h3>
+            <p className="text-sm text-gray-600">{currentBook.author}</p>
+            <div className="mt-4">
+              <div className="w-full bg-gray-200 rounded-full h-2.5">
+                <div 
+                  className="bg-blue-600 h-2.5 rounded-full"
+                  style={{ width: '45%' }}
+                />
               </div>
+              <span className="text-sm text-gray-600 mt-1">
+                Page 150 of {currentBook.totalPages}
+              </span>
             </div>
           </div>
         </div>

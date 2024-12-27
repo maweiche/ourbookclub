@@ -5,8 +5,8 @@ import { mockDb } from './mockDb'
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api'
 const SIMULATED_DELAY = 1000
 
-interface ApiOptions extends RequestInit {
-  params?: Record<string, string>
+export interface ApiOptions extends RequestInit {
+  params?: Record<string, string | string[]>  // Update this to allow array values
 }
 
 type MockCollections = 'users' | 'groups' | 'books' | 'readingProgress' | 'discussions'
@@ -76,12 +76,12 @@ export async function apiClient<T>(
       const [collection, ...actionParts] = endpoint.split('/').filter(Boolean)
       const action = actionParts.join('/')
       
-      console.log('API Call:', { 
+      console.log('API Client called with:', { 
         endpoint, 
         collection, 
         action, 
         options,
-        params: options.params 
+        params: options.params
       })
 
       await new Promise(resolve => setTimeout(resolve, SIMULATED_DELAY))
@@ -90,29 +90,21 @@ export async function apiClient<T>(
         throw new Error(`Invalid collection: ${collection}`)
       }
 
-      if (options.method === 'GET' || !options.method) {
-        const data = mockDb.getData(collection, options.params)
-        console.log('Mock Data Response:', data)
-        return { data: data as T, error: null }
-      }
-
-      if (options.method === 'POST' || options.method === 'PATCH') {
-        const body = options.body ? JSON.parse(options.body as string) : {}
-        const currentData = mockDb.getData(collection, options.params) || []
-        const updatedData = handleMockUpdate(collection, action, currentData, body)
-        const savedData = mockDb.updateData(collection, updatedData)
-        console.log('Updated Mock Data:', savedData)
-        return { data: savedData as T, error: null }
-      }
-
-      throw new Error(`Unsupported HTTP method: ${options.method}`)
+      // Pass params directly without any transformation
+      const data = mockDb.getData(collection, options.params)
+      console.log('API Client response data:', data)
+      return { data: data as T, error: null }
     }
 
     // Production API calls
     const url = new URL(`${BASE_URL}${endpoint}`)
     if (options.params) {
       Object.entries(options.params).forEach(([key, value]) => {
-        url.searchParams.append(key, value)
+        if (Array.isArray(value)) {
+          value.forEach(val => url.searchParams.append(key, val))
+        } else {
+          url.searchParams.append(key, value)
+        }
       })
     }
 
