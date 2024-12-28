@@ -119,6 +119,96 @@
           "review": "A masterpiece of science fiction!"
         }
       ]
+    },
+    {
+      "id": "b4",
+      "title": "1984",
+      "author": "George Orwell",
+      "coverImage": "/covers/1984.jpg",
+      "totalPages": 328,
+      "votes": [
+        {
+          "userId": "u2",
+          "value": 1
+        }
+      ],
+      "ratings": [
+        {
+          "userId": "u1",
+          "rating": 4,
+          "review": "A thought-provoking dystopian novel."
+        }
+      ]
+    },
+    {
+      "id": "b5",
+      "title": "Brave New World",
+      "author": "Aldous Huxley",
+      "coverImage": "/covers/brave-new-world.jpg",
+      "totalPages": 268,
+      "votes": [
+      {
+        "userId": "u2",
+        "value": 1
+      }
+      ],
+      "ratings": [
+      {
+        "userId": "u1",
+        "rating": 4,
+        "review": "A fascinating look at a dystopian future."
+      }
+      ]
+    },
+    {
+      "id": "b6",
+      "title": "To Kill a Mockingbird",
+      "author": "Harper Lee",
+      "coverImage": "/covers/to-kill-a-mockingbird.jpg",
+      "totalPages": 281,
+      "votes": [],
+      "ratings": [
+      {
+        "userId": "u2",
+        "rating": 5,
+        "review": "A powerful and moving story."
+      }
+      ]
+    },
+    {
+      "id": "b7",
+      "title": "The Great Gatsby",
+      "author": "F. Scott Fitzgerald",
+      "coverImage": "/covers/the-great-gatsby.jpg",
+      "totalPages": 180,
+      "votes": [
+      {
+        "userId": "u1",
+        "value": 1
+      }
+      ],
+      "ratings": [
+      {
+        "userId": "u2",
+        "rating": 4,
+        "review": "A classic tale of the American dream."
+      }
+      ]
+    },
+    {
+      "id": "b8",
+      "title": "Moby Dick",
+      "author": "Herman Melville",
+      "coverImage": "/covers/moby-dick.jpg",
+      "totalPages": 635,
+      "votes": [],
+      "ratings": [
+      {
+        "userId": "u1",
+        "rating": 3,
+        "review": "A challenging but rewarding read."
+      }
+      ]
     }
   ],
   "readingProgress": [

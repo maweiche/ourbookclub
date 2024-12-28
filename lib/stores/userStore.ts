@@ -4,6 +4,7 @@ import { persist, createJSONStorage } from 'zustand/middleware'
 import { User } from '@/lib/types'
 import { api } from '@/lib/api/endpoints'
 import { useGroupStore } from './groupStore'
+import { useBookStore } from './bookStore'
 
 interface UserState {
   currentUser: User | null
@@ -36,22 +37,17 @@ export const useUserStore = create<UserState>()(
             return
           }
 
-          // Ensure we store the complete user data
-          const completeUserData = {
-            id: userData.id,
-            name: userData.name,
-            email: userData.email,
-            profilePicture: userData.profilePicture,
-            readingPreferences: userData.readingPreferences,
-            groupIds: userData.groupIds
+          console.log('Login response:', userData)
+
+          if (userData.groupIds && userData.groupIds.length > 0) {
+            console.log('Fetching groups for:', userData.groupIds)
+            await useGroupStore.getState().fetchGroups(userData.groupIds)
           }
 
-          console.log('Setting user data:', completeUserData)
-
           set({ 
-            currentUser: completeUserData,
+            currentUser: userData,
             isAuthenticated: true,
-            activeGroupId: completeUserData.groupIds?.[0] || null,
+            activeGroupId: userData.groupIds?.[0] || null,
             isLoading: false,
             error: null
           })
@@ -68,6 +64,7 @@ export const useUserStore = create<UserState>()(
         set({ isLoading: true, error: null })
         
         try {
+          // Make the logout API call
           const { error } = await api.auth.logout()
 
           if (error) {
@@ -75,8 +72,22 @@ export const useUserStore = create<UserState>()(
             return
           }
 
-          useGroupStore.setState({ groups: new Map() })
+          // Clear other store states
+          useGroupStore.setState({ 
+            groups: new Map(),
+            currentGroup: null,
+            isLoading: false,
+            error: null 
+          })
 
+          useBookStore.setState({
+            books: new Map(),
+            currentBook: null,
+            isLoading: false,
+            error: null
+          })
+
+          // Clear user state
           set({ 
             currentUser: null,
             isAuthenticated: false,
@@ -84,6 +95,12 @@ export const useUserStore = create<UserState>()(
             isLoading: false,
             error: null
           })
+
+          // Clear persisted storage
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem('user-storage')
+          }
+
         } catch (err) {
           set({ 
             error: err instanceof Error ? err.message : 'Logout failed',
@@ -98,10 +115,7 @@ export const useUserStore = create<UserState>()(
       name: 'user-storage',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
-        currentUser: state.currentUser ? {
-          ...state.currentUser,
-          groupIds: [...state.currentUser.groupIds] // Ensure groupIds array is properly cloned
-        } : null,
+        currentUser: state.currentUser,
         isAuthenticated: state.isAuthenticated,
         activeGroupId: state.activeGroupId
       })

@@ -2,29 +2,26 @@
 'use client'
 
 import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { useUserStore } from '@/lib/stores/userStore'
 import { useGroupStore } from '@/lib/stores/groupStore'
 import Dashboard from '@/components/Dashboard/Dashboard'
 
 export default function DashboardPage() {
-  const { currentUser, isAuthenticated, login } = useUserStore()
+  const router = useRouter()
+  const { currentUser, isAuthenticated } = useUserStore()
   const { groups } = useGroupStore()
 
-  useEffect(() => {
-    // If no user is authenticated, try to login
-    if (!isAuthenticated) {
-      login()
-    }
-    
-    console.log('Dashboard State:', { 
-      currentUser, 
-      isAuthenticated,
-      groupsSize: groups.size 
-    })
-  }, [isAuthenticated, currentUser, groups])
+  // useEffect(() => {
+  //   // If not authenticated, redirect to home page
+  //   if (!isAuthenticated) {
+  //     router.push('/')
+  //   }
+  // }, [isAuthenticated, router])
 
+  // Show loading state while checking authentication
   if (!isAuthenticated) {
-    return <div>Loading...</div>
+    return null
   }
 
   return <Dashboard />

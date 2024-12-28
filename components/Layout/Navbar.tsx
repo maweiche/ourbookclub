@@ -12,11 +12,17 @@ const Navbar = () => {
   const router = useRouter()
   const pathname = usePathname()
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      login()
-    }
-  }, [isAuthenticated])
+  // useEffect(() => {
+  //   // If not authenticated, redirect to home page
+  //   if (!isAuthenticated) {
+  //     router.push('/')
+  //   }
+  // }, [isAuthenticated, router])
+
+  async function handleLogout() {
+    await logout()
+    router.push('/')
+  }
 
   useEffect(() => {
     const fetchUserGroups = async () => {
@@ -63,16 +69,23 @@ const Navbar = () => {
           </div>
           
           <div className="flex items-center">
-            {currentUser && (
+            {currentUser ? (
               <>
                 <span className="mr-4">{currentUser.name}</span>
                 <button 
-                  onClick={logout}
+                  onClick={handleLogout}
                   className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors"
                 >
                   Logout
                 </button>
               </>
+            ) : (
+              <button 
+                onClick={login}
+                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors"
+              >
+                Login
+              </button>
             )}
           </div>
         </div>
