@@ -12,45 +12,33 @@ class MockDatabase {
   }
 
   getData(collection: keyof typeof initialMockData, params?: any) {
-    console.log('Raw data from mockData.json:', this.data[collection])
+    console.log('MockDB getData called:', { collection, params })
     const data = deepClone(this.data[collection])
-    console.log('Data after deepClone:', data)
-  
+    
     if (collection === 'groups' && params?.ids) {
-      // First verify we have all groups from the initial data
-      console.log('All available groups:', data.length) // Should be 2 based on your mockData.json
-
+      // Ensure ids parameter is always an array
       const groupIds = Array.isArray(params.ids) 
         ? params.ids 
-        : typeof params.ids === 'string'
-          ? params.ids.split(',')
-          : []
+        : [params.ids]
 
-      console.log('Group IDs to filter:', groupIds)
-      
-      // Check the actual data structure
-      const isArray = Array.isArray(data)
-      console.log('Is data an array?', isArray)
-      
-      const filteredGroups = isArray
-        ? data.filter((group: any) => {
-            const included = groupIds.includes(group.id)
-            console.log(`Group ${group.id} included?`, included)
-            return included
-          })
-        : []
-
-      console.log('Filtered groups:', filteredGroups)
+      console.log('Filtering groups by IDs:', groupIds)
+      // Filter groups and log the result
+      const filteredGroups = data.filter((group: any) => 
+        groupIds.includes(group.id)
+      )
+      console.log('Filtered groups result:', filteredGroups)
       return filteredGroups
     }
     
+    if (collection === 'users' && params?.id) {
+      return data.find((user: any) => user.id === params.id)
+    }
+
     return data
   }
 
   updateData(collection: keyof typeof initialMockData, data: any) {
     this.data[collection] = deepClone(data)
-    this.persistToLocalStorage()
-    return this.getData(collection)
   }
 
   private persistToLocalStorage() {

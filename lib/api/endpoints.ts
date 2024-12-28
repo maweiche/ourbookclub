@@ -18,14 +18,14 @@ export const api = {
   auth: {
     login: () => apiClient<User>('/users', { 
       method: 'GET',
-      params: { id: 'u1' }
+      params: { id: 'u1' }  // This should return user with groupIds
     }),
     logout: () => apiClient('/users/logout', { 
       method: 'POST',
-      // No need for actual data since we're just simulating logout
       params: { action: 'logout' }
     }),
   },
+
   // Group endpoints
   // groups: {
   //   list: (userId: string) => 
@@ -46,13 +46,15 @@ export const api = {
 
   // Dummy Data for now
   groups: {
-    list: (groupIds: string[]) => 
-      apiClient<Group[]>('/groups', { 
+    list: (groupIds: string[]) => {
+      console.log('API endpoint called with groupIds:', groupIds)
+      return apiClient<Group[]>('/groups', { 
         method: 'GET',
-        // Pass the array directly instead of joining
-        params: { ids: groupIds } 
-      }),
-    get: (groupId: string) => apiClient<Group>(`/groups/${groupId}`, { method: 'GET' }),
+        params: { ids: groupIds }  // Pass as array
+      })
+    },
+    get: (groupId: string) => 
+      apiClient<Group>(`/groups/${groupId}`, { method: 'GET' }),
     create: (data: Partial<Group>) => apiClient<Group>('/groups', {
       method: 'POST',
       body: JSON.stringify(data),

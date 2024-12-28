@@ -36,23 +36,27 @@ export const useUserStore = create<UserState>()(
             return
           }
 
-          console.log('Login response:', userData) // Debug log
-
-          // Check if user has groups before trying to fetch them
-          if (userData.groupIds && userData.groupIds.length > 0) {
-            console.log('Fetching groups for:', userData.groupIds) // Debug log
-            await useGroupStore.getState().fetchGroups(userData.groupIds)
+          // Ensure we store the complete user data
+          const completeUserData = {
+            id: userData.id,
+            name: userData.name,
+            email: userData.email,
+            profilePicture: userData.profilePicture,
+            readingPreferences: userData.readingPreferences,
+            groupIds: userData.groupIds
           }
 
+          console.log('Setting user data:', completeUserData)
+
           set({ 
-            currentUser: userData,
+            currentUser: completeUserData,
             isAuthenticated: true,
-            activeGroupId: userData.groupIds?.[0] || null,
+            activeGroupId: completeUserData.groupIds?.[0] || null,
             isLoading: false,
             error: null
           })
         } catch (err) {
-          console.error('Login error:', err) // Debug log
+          console.error('Login error:', err)
           set({ 
             error: err instanceof Error ? err.message : 'Login failed',
             isLoading: false
@@ -71,7 +75,6 @@ export const useUserStore = create<UserState>()(
             return
           }
 
-          // Clear the group store state
           useGroupStore.setState({ groups: new Map() })
 
           set({ 
@@ -95,7 +98,10 @@ export const useUserStore = create<UserState>()(
       name: 'user-storage',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
-        currentUser: state.currentUser,
+        currentUser: state.currentUser ? {
+          ...state.currentUser,
+          groupIds: [...state.currentUser.groupIds] // Ensure groupIds array is properly cloned
+        } : null,
         isAuthenticated: state.isAuthenticated,
         activeGroupId: state.activeGroupId
       })

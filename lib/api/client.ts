@@ -67,6 +67,7 @@ function handleMockUpdate(
   return dataArray
 }
 
+// src/lib/api/client.ts
 export async function apiClient<T>(
   endpoint: string,
   options: ApiOptions = {}
@@ -76,12 +77,14 @@ export async function apiClient<T>(
       const [collection, ...actionParts] = endpoint.split('/').filter(Boolean)
       const action = actionParts.join('/')
       
-      console.log('API Client called with:', { 
+      // Add debug logging
+      console.log('API Client request:', { 
         endpoint, 
         collection, 
         action, 
         options,
-        params: options.params
+        params: options.params,
+        method: options.method
       })
 
       await new Promise(resolve => setTimeout(resolve, SIMULATED_DELAY))
@@ -90,9 +93,14 @@ export async function apiClient<T>(
         throw new Error(`Invalid collection: ${collection}`)
       }
 
-      // Pass params directly without any transformation
+      // Get data from mockDb
       const data = mockDb.getData(collection, options.params)
-      console.log('API Client response data:', data)
+      console.log('API Client response:', {
+        collection,
+        params: options.params,
+        data
+      })
+      
       return { data: data as T, error: null }
     }
 
@@ -101,6 +109,7 @@ export async function apiClient<T>(
     if (options.params) {
       Object.entries(options.params).forEach(([key, value]) => {
         if (Array.isArray(value)) {
+          // If value is an array, append each item with the same key
           value.forEach(val => url.searchParams.append(key, val))
         } else {
           url.searchParams.append(key, value)
