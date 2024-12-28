@@ -9,6 +9,7 @@ import GroupHeader from '@/components/Group/GroupHeader'
 import CurrentBook from '@/components/Group/CurrentBook'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import ErrorMessage from '@/components/ui/ErrorMessage'
+import BookList from '@/components/Group/BookList'
 
 export default function GroupPage() {
   const params = useParams()
@@ -55,7 +56,9 @@ export default function GroupPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
       <GroupHeader group={group} />
-      <CurrentBook group={group} />
+      <div className="mt-6">
+        <BookList />
+      </div>
     </div>
   )
 }
