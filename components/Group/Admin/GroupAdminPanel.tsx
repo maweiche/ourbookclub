@@ -7,7 +7,13 @@ import { useUserStore } from '@/lib/stores/userStore'
 import { Group, User } from '@/lib/types'
 import MemberManagement from './MemberManagement'
 import GroupSettings from './GroupSettings'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Settings, Users, AlertTriangle } from 'lucide-react'
@@ -33,34 +39,36 @@ const GroupAdminPanel = () => {
   }
 
   return (
-    <Card className="max-w-4xl mx-auto">
+    <Card className="mx-auto max-w-4xl">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold">Group Administration</CardTitle>
+        <CardTitle className="text-2xl font-bold">
+          Group Administration
+        </CardTitle>
         <CardDescription>
           Manage members and settings for {group.name}
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Tabs 
-          defaultValue="members" 
+        <Tabs
+          defaultValue="members"
           className="space-y-6"
           onValueChange={(value) => setActiveTab(value)}
         >
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="members" className="flex items-center">
-              <Users className="h-4 w-4 mr-2" />
+              <Users className="mr-2 h-4 w-4" />
               Members
             </TabsTrigger>
             <TabsTrigger value="settings" className="flex items-center">
-              <Settings className="h-4 w-4 mr-2" />
+              <Settings className="mr-2 h-4 w-4" />
               Settings
             </TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="members" className="space-y-4">
             <MemberManagement group={group} /> {/* Pass the group as prop */}
           </TabsContent>
-          
+
           <TabsContent value="settings" className="space-y-4">
             <GroupSettings />
           </TabsContent>

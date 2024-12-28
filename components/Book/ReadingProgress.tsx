@@ -3,6 +3,16 @@
 import { useState } from 'react'
 import { useBookStore } from '@/lib/stores/bookStore'
 import { useUserStore } from '@/lib/stores/userStore'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Progress } from '@/components/ui/progress'
+import { BookOpen, Save } from 'lucide-react'
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '@/components/ui/hover-card'
 
 const ReadingProgress = () => {
   const { currentBook } = useBookStore()
@@ -18,41 +28,57 @@ const ReadingProgress = () => {
     console.log(`Updated progress: ${currentPage} pages`)
   }
 
-  return (
-    <div className="rounded-lg bg-white p-6 shadow">
-      <h2 className="mb-4 text-xl font-semibold">Reading Progress</h2>
+  if (!currentBook) {
+    return null
+  }
 
-      {currentBook && (
-        <div className="space-y-4">
-          <div className="flex items-center space-x-4">
-            <input
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <BookOpen className="h-5 w-5" />
+          Reading Progress
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Input
               type="number"
               min={0}
               max={currentBook.totalPages}
               value={currentPage}
               onChange={(e) => setCurrentPage(Number(e.target.value))}
-              className="w-24 rounded-md border-gray-300"
+              className="w-24"
             />
-            <span className="text-gray-600">
+            <span className="text-sm text-muted-foreground">
               of {currentBook.totalPages} pages
             </span>
-            <button
-              onClick={handleUpdateProgress}
-              className="rounded-md bg-blue-500 px-4 py-2 text-white"
-            >
-              Update
-            </button>
           </div>
+          <Button onClick={handleUpdateProgress}>
+            <Save className="mr-2 h-4 w-4" />
+            Update
+          </Button>
+        </div>
 
-          <div className="h-2.5 w-full rounded-full bg-gray-200">
-            <div
-              className="h-2.5 rounded-full bg-blue-600"
-              style={{ width: `${progressPercentage}%` }}
-            />
+        <div className="space-y-2">
+          <HoverCard>
+            <HoverCardTrigger asChild>
+              <div>
+                <Progress value={progressPercentage} />
+              </div>
+            </HoverCardTrigger>
+            <HoverCardContent className="text-sm">
+              You've read {Math.round(progressPercentage)}% of the book
+            </HoverCardContent>
+          </HoverCard>
+          <div className="flex justify-between text-sm text-muted-foreground">
+            <span>0%</span>
+            <span>100%</span>
           </div>
         </div>
-      )}
-    </div>
+      </CardContent>
+    </Card>
   )
 }
 

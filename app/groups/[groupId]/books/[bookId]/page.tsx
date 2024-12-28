@@ -9,7 +9,7 @@ import BookDiscussion from '@/components/Book/BookDiscussion'
 export default function BookDiscussionPage() {
   const params = useParams()
   const { fetchBooks, setCurrentBook } = useBookStore()
-  
+
   useEffect(() => {
     const initializeBook = async () => {
       if (params.bookId) {

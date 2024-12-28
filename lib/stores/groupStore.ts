@@ -30,7 +30,7 @@ export const useGroupStore = create<GroupState>((set, get) => ({
     }
 
     set({ isLoading: true, error: null })
-    
+
     try {
       console.log('Fetching groups for IDs:', userGroupIds)
       currentFetchPromise = (async () => {
@@ -45,14 +45,14 @@ export const useGroupStore = create<GroupState>((set, get) => ({
         if (data && Array.isArray(data)) {
           console.log('Received groups data:', data)
           const groupsMap = new Map()
-          data.forEach(group => {
+          data.forEach((group) => {
             groupsMap.set(group.id, group)
           })
-          
-          set({ 
+
+          set({
             groups: groupsMap,
             isLoading: false,
-            error: null
+            error: null,
           })
         }
       })()
@@ -60,9 +60,9 @@ export const useGroupStore = create<GroupState>((set, get) => ({
       await currentFetchPromise
     } catch (err) {
       console.error('Failed to fetch groups:', err)
-      set({ 
+      set({
         error: err instanceof Error ? err.message : 'Failed to fetch groups',
-        isLoading: false
+        isLoading: false,
       })
     } finally {
       currentFetchPromise = null
@@ -78,13 +78,13 @@ export const useGroupStore = create<GroupState>((set, get) => ({
 
   addMember: async (groupId: string, userId: string) => {
     set({ isLoading: true, error: null })
-    
+
     const group = get().groups.get(groupId)
     if (!group) return
 
     try {
       const { data, error } = await api.groups.update(groupId, {
-        memberIds: [...group.memberIds, userId]
+        memberIds: [...group.memberIds, userId],
       })
 
       if (error) {
@@ -95,23 +95,23 @@ export const useGroupStore = create<GroupState>((set, get) => ({
       if (data) {
         const groups = get().groups
         groups.set(groupId, data)
-        set({ 
+        set({
           groups: new Map(groups),
           isLoading: false,
-          error: null
+          error: null,
         })
       }
     } catch (err) {
-      set({ 
+      set({
         error: err instanceof Error ? err.message : 'Failed to add member',
-        isLoading: false 
+        isLoading: false,
       })
     }
   },
 
   updateGroup: async (groupId: string, updates: Partial<Group>) => {
     set({ isLoading: true, error: null })
-    
+
     try {
       const { data, error } = await api.groups.update(groupId, updates)
 
@@ -123,16 +123,16 @@ export const useGroupStore = create<GroupState>((set, get) => ({
       if (data) {
         const groups = get().groups
         groups.set(groupId, data)
-        set({ 
+        set({
           groups: new Map(groups),
           isLoading: false,
-          error: null 
+          error: null,
         })
       }
     } catch (err) {
-      set({ 
+      set({
         error: err instanceof Error ? err.message : 'Failed to update group',
-        isLoading: false
+        isLoading: false,
       })
     }
   },

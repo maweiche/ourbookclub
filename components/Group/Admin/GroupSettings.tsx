@@ -3,7 +3,13 @@
 
 import { useState } from 'react'
 import { useGroupStore } from '@/lib/stores/groupStore'
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
@@ -14,14 +20,18 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from '@/components/ui/select'
 import { Pencil, Save, X, Lock } from 'lucide-react'
 
 const GroupSettings = () => {
   const { currentGroup, updateGroup } = useGroupStore()
   const [groupName, setGroupName] = useState(currentGroup?.name || '')
-  const [groupDescription, setGroupDescription] = useState(currentGroup?.description || '')
-  const [groupPassword, setGroupPassword] = useState(currentGroup?.password || '')
+  const [groupDescription, setGroupDescription] = useState(
+    currentGroup?.description || ''
+  )
+  const [groupPassword, setGroupPassword] = useState(
+    currentGroup?.password || ''
+  )
   const [isEditing, setIsEditing] = useState(false)
 
   const handleSaveSettings = async () => {
@@ -38,15 +48,15 @@ const GroupSettings = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-xl font-semibold flex items-center justify-between">
+        <CardTitle className="flex items-center justify-between text-xl font-semibold">
           Group Settings
           {!isEditing && (
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => setIsEditing(true)}
             >
-              <Pencil className="h-4 w-4 mr-2" />
+              <Pencil className="mr-2 h-4 w-4" />
               Edit Settings
             </Button>
           )}
@@ -90,12 +100,16 @@ const GroupSettings = () => {
         ) : (
           <div className="space-y-6">
             <div className="space-y-1">
-              <Label className="text-sm text-muted-foreground">Group Name</Label>
+              <Label className="text-sm text-muted-foreground">
+                Group Name
+              </Label>
               <p className="text-sm font-medium">{currentGroup?.name}</p>
             </div>
 
             <div className="space-y-1">
-              <Label className="text-sm text-muted-foreground">Description</Label>
+              <Label className="text-sm text-muted-foreground">
+                Description
+              </Label>
               <p className="text-sm">{currentGroup?.description}</p>
             </div>
 
@@ -111,17 +125,12 @@ const GroupSettings = () => {
       </CardContent>
       {isEditing && (
         <CardFooter className="flex justify-end space-x-2">
-          <Button
-            variant="outline"
-            onClick={() => setIsEditing(false)}
-          >
-            <X className="h-4 w-4 mr-2" />
+          <Button variant="outline" onClick={() => setIsEditing(false)}>
+            <X className="mr-2 h-4 w-4" />
             Cancel
           </Button>
-          <Button
-            onClick={handleSaveSettings}
-          >
-            <Save className="h-4 w-4 mr-2" />
+          <Button onClick={handleSaveSettings}>
+            <Save className="mr-2 h-4 w-4" />
             Save Changes
           </Button>
         </CardFooter>

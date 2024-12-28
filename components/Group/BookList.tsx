@@ -1,55 +1,55 @@
 // /src/components/Group/BookList.tsx
-import React, { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useBookStore } from '@/lib/stores/bookStore';
-import { useGroupStore } from '@/lib/stores/groupStore';
-import { useUserStore } from '@/lib/stores/userStore';
+import React, { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useBookStore } from '@/lib/stores/bookStore'
+import { useGroupStore } from '@/lib/stores/groupStore'
+import { useUserStore } from '@/lib/stores/userStore'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { CalendarDays, MessageSquare } from 'lucide-react';
+} from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
+import { CalendarDays, MessageSquare } from 'lucide-react'
 
 const BookList = () => {
-  const router = useRouter();
-  const activeGroupId = useUserStore((state) => state.activeGroupId);
-  const currentGroup = useGroupStore((state) => 
+  const router = useRouter()
+  const activeGroupId = useUserStore((state) => state.activeGroupId)
+  const currentGroup = useGroupStore((state) =>
     activeGroupId ? state.groups.get(activeGroupId) : null
-  );
-  const { books, fetchBooks, isLoading } = useBookStore();
+  )
+  const { books, fetchBooks, isLoading } = useBookStore()
 
   useEffect(() => {
     const fetchAllBooks = async () => {
       if (currentGroup) {
         const allBookIds = [
           currentGroup.currentBookId,
-          ...currentGroup.readingHistory.map(h => h.bookId),
-          ...currentGroup.suggestedBooks
-        ].filter((id): id is string => Boolean(id));
+          ...currentGroup.readingHistory.map((h) => h.bookId),
+          ...currentGroup.suggestedBooks,
+        ].filter((id): id is string => Boolean(id))
 
-        await fetchBooks(allBookIds);
+        await fetchBooks(allBookIds)
       }
-    };
+    }
 
-    fetchAllBooks();
-  }, [currentGroup, fetchBooks]);
+    fetchAllBooks()
+  }, [currentGroup, fetchBooks])
 
   const handleBookClick = (bookId: string) => {
     if (activeGroupId) {
-      router.push(`/groups/${activeGroupId}/books/${bookId}`);
+      router.push(`/groups/${activeGroupId}/books/${bookId}`)
     }
-  };
+  }
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-[200px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
+      <div className="flex min-h-[200px] items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-500" />
       </div>
-    );
+    )
   }
 
   return (
@@ -57,9 +57,9 @@ const BookList = () => {
       {/* Current Book Section */}
       {currentGroup?.currentBookId && books.get(currentGroup.currentBookId) && (
         <section>
-          <h2 className="text-2xl font-bold mb-4">Current Book</h2>
-          <Card 
-            className="cursor-pointer hover:shadow-lg transition-shadow"
+          <h2 className="mb-4 text-2xl font-bold">Current Book</h2>
+          <Card
+            className="cursor-pointer transition-shadow hover:shadow-lg"
             onClick={() => handleBookClick(currentGroup.currentBookId!)}
           >
             <CardHeader className="space-y-2">
@@ -73,23 +73,32 @@ const BookList = () => {
             <CardContent>
               <div className="flex items-start space-x-4">
                 <img
-                  src={books.get(currentGroup.currentBookId)?.coverImage || '/api/placeholder/96/144'}
+                  src={
+                    books.get(currentGroup.currentBookId)?.coverImage ||
+                    '/api/placeholder/96/144'
+                  }
                   alt={books.get(currentGroup.currentBookId)?.title}
                   className="h-36 w-24 rounded object-cover"
                 />
                 <div className="space-y-2">
                   {books.get(currentGroup.currentBookId)?.ratings.length ? (
                     <div className="text-sm text-gray-600">
-                      Average Rating: {(books.get(currentGroup.currentBookId)!.ratings
-                        .reduce((acc, r) => acc + r.rating, 0) / 
+                      Average Rating:{' '}
+                      {(
+                        books
+                          .get(currentGroup.currentBookId)!
+                          .ratings.reduce((acc, r) => acc + r.rating, 0) /
                         books.get(currentGroup.currentBookId)!.ratings.length
-                      ).toFixed(1)}/5
+                      ).toFixed(1)}
+                      /5
                     </div>
                   ) : null}
                   <div className="flex space-x-4 text-sm text-gray-500">
                     <span className="flex items-center gap-1">
                       <MessageSquare className="h-4 w-4" />
-                      {books.get(currentGroup.currentBookId)?.ratings.length || 0} reviews
+                      {books.get(currentGroup.currentBookId)?.ratings.length ||
+                        0}{' '}
+                      reviews
                     </span>
                   </div>
                 </div>
@@ -102,16 +111,16 @@ const BookList = () => {
       {/* Reading History Section */}
       {currentGroup?.readingHistory.length ? (
         <section>
-          <h2 className="text-2xl font-bold mb-4">Reading History</h2>
+          <h2 className="mb-4 text-2xl font-bold">Reading History</h2>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {currentGroup.readingHistory.map((history) => {
-              const book = books.get(history.bookId);
-              if (!book) return null;
+              const book = books.get(history.bookId)
+              if (!book) return null
 
               return (
-                <Card 
+                <Card
                   key={history.bookId}
-                  className="cursor-pointer hover:shadow-lg transition-shadow"
+                  className="cursor-pointer transition-shadow hover:shadow-lg"
                   onClick={() => handleBookClick(history.bookId)}
                 >
                   <CardHeader>
@@ -129,26 +138,35 @@ const BookList = () => {
                         <div className="flex items-center text-sm text-gray-500">
                           <CalendarDays className="mr-1 h-4 w-4" />
                           <span>
-                            Completed {new Date(history.completedDate).toLocaleDateString()}
+                            Completed{' '}
+                            {new Date(
+                              history.completedDate
+                            ).toLocaleDateString()}
                           </span>
                         </div>
                         {book.ratings.length > 0 && (
                           <div className="text-sm text-gray-600">
-                            Rating: {(book.ratings.reduce((acc, r) => acc + r.rating, 0) / 
-                              book.ratings.length).toFixed(1)}/5
+                            Rating:{' '}
+                            {(
+                              book.ratings.reduce(
+                                (acc, r) => acc + r.rating,
+                                0
+                              ) / book.ratings.length
+                            ).toFixed(1)}
+                            /5
                           </div>
                         )}
                       </div>
                     </div>
                   </CardContent>
                 </Card>
-              );
+              )
             })}
           </div>
         </section>
       ) : null}
     </div>
-  );
-};
+  )
+}
 
-export default BookList;
+export default BookList

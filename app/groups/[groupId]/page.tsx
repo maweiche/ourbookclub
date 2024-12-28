@@ -7,8 +7,8 @@ import { useGroupStore } from '@/lib/stores/groupStore'
 import { useUserStore } from '@/lib/stores/userStore'
 import GroupHeader from '@/components/Group/GroupHeader'
 import CurrentBook from '@/components/Group/CurrentBook'
-import LoadingSpinner from '@/components/ui/LoadingSpinner'
-import ErrorMessage from '@/components/ui/ErrorMessage'
+import LoadingSpinner from '@/components/ui/loading-spinner'
+import ErrorMessage from '@/components/ui/error-message'
 import BookList from '@/components/Group/BookList'
 
 export default function GroupPage() {
@@ -32,7 +32,7 @@ export default function GroupPage() {
   // Show loading spinner during initial load or while fetching group data
   if (!initialLoadComplete || isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
+      <div className="flex min-h-screen items-center justify-center">
         <LoadingSpinner />
       </div>
     )

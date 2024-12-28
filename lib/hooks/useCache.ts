@@ -19,24 +19,26 @@ interface CacheStore {
 const useCacheStore = create<CacheStore>()(
   subscribeWithSelector((set, get) => ({
     cache: {},
-    
-    set: (key, data) => set(state => ({
-      cache: {
-        ...state.cache,
-        [key]: {
-          data,
-          timestamp: Date.now(),
+
+    set: (key, data) =>
+      set((state) => ({
+        cache: {
+          ...state.cache,
+          [key]: {
+            data,
+            timestamp: Date.now(),
+          },
         },
-      },
-    })),
-    
+      })),
+
     get: (key) => get().cache[key]?.data,
-    
-    invalidate: (key) => set(state => {
-      const { [key]: _, ...rest } = state.cache
-      return { cache: rest }
-    }),
-    
+
+    invalidate: (key) =>
+      set((state) => {
+        const { [key]: _, ...rest } = state.cache
+        return { cache: rest }
+      }),
+
     isStale: (key, maxAge) => {
       const entry = get().cache[key]
       if (!entry) return true

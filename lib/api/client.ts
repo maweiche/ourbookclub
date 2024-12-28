@@ -6,13 +6,24 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api'
 const SIMULATED_DELAY = 1000
 
 export interface ApiOptions extends RequestInit {
-  params?: Record<string, string | string[]>  // Update this to allow array values
+  params?: Record<string, string | string[]> // Update this to allow array values
 }
 
-type MockCollections = 'users' | 'groups' | 'books' | 'readingProgress' | 'discussions'
+type MockCollections =
+  | 'users'
+  | 'groups'
+  | 'books'
+  | 'readingProgress'
+  | 'discussions'
 
 function isValidCollection(collection: string): collection is MockCollections {
-  return ['users', 'groups', 'books', 'readingProgress', 'discussions'].includes(collection)
+  return [
+    'users',
+    'groups',
+    'books',
+    'readingProgress',
+    'discussions',
+  ].includes(collection)
 }
 
 function handleMockUpdate(
@@ -35,7 +46,7 @@ function handleMockUpdate(
       }
       if (action?.startsWith('update')) {
         const id = action.split('/')[1]
-        return dataArray.map(item => 
+        return dataArray.map((item) =>
           item.id === id ? { ...item, ...body } : item
         )
       }
@@ -44,9 +55,11 @@ function handleMockUpdate(
     case 'books':
       if (action === 'vote') {
         const { bookId, userId, value } = body
-        return dataArray.map(book => {
+        return dataArray.map((book) => {
           if (book.id === bookId) {
-            const votes = book.votes.filter((v: { userId: any }) => v.userId !== userId)
+            const votes = book.votes.filter(
+              (v: { userId: any }) => v.userId !== userId
+            )
             votes.push({ userId, value })
             return { ...book, votes }
           }
@@ -57,7 +70,7 @@ function handleMockUpdate(
 
     case 'users':
       if (action === 'update') {
-        return dataArray.map(user => 
+        return dataArray.map((user) =>
           user.id === body.id ? { ...user, ...body } : user
         )
       }
@@ -76,18 +89,18 @@ export async function apiClient<T>(
     if (process.env.NODE_ENV === 'development') {
       const [collection, ...actionParts] = endpoint.split('/').filter(Boolean)
       const action = actionParts.join('/')
-      
+
       // Add debug logging
-      console.log('API Client request:', { 
-        endpoint, 
-        collection, 
-        action, 
+      console.log('API Client request:', {
+        endpoint,
+        collection,
+        action,
         options,
         params: options.params,
-        method: options.method
+        method: options.method,
       })
 
-      await new Promise(resolve => setTimeout(resolve, SIMULATED_DELAY))
+      await new Promise((resolve) => setTimeout(resolve, SIMULATED_DELAY))
 
       if (!isValidCollection(collection)) {
         throw new Error(`Invalid collection: ${collection}`)
@@ -98,9 +111,9 @@ export async function apiClient<T>(
       console.log('API Client response:', {
         collection,
         params: options.params,
-        data
+        data,
       })
-      
+
       return { data: data as T, error: null }
     }
 
@@ -110,7 +123,7 @@ export async function apiClient<T>(
       Object.entries(options.params).forEach(([key, value]) => {
         if (Array.isArray(value)) {
           // If value is an array, append each item with the same key
-          value.forEach(val => url.searchParams.append(key, val))
+          value.forEach((val) => url.searchParams.append(key, val))
         } else {
           url.searchParams.append(key, value)
         }
@@ -133,9 +146,9 @@ export async function apiClient<T>(
     return { data, error: null }
   } catch (error) {
     console.error('API Error:', error)
-    return { 
-      data: null, 
-      error: error instanceof Error ? error.message : 'Unknown error occurred' 
+    return {
+      data: null,
+      error: error instanceof Error ? error.message : 'Unknown error occurred',
     }
   }
 }

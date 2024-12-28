@@ -28,12 +28,15 @@ export const useUserStore = create<UserState>()(
 
       login: async () => {
         set({ isLoading: true, error: null })
-        
+
         try {
           const { data: userData, error: userError } = await api.auth.login()
 
           if (userError || !userData) {
-            set({ error: userError || 'Failed to fetch user data', isLoading: false })
+            set({
+              error: userError || 'Failed to fetch user data',
+              isLoading: false,
+            })
             return
           }
 
@@ -44,25 +47,25 @@ export const useUserStore = create<UserState>()(
             await useGroupStore.getState().fetchGroups(userData.groupIds)
           }
 
-          set({ 
+          set({
             currentUser: userData,
             isAuthenticated: true,
             activeGroupId: userData.groupIds?.[0] || null,
             isLoading: false,
-            error: null
+            error: null,
           })
         } catch (err) {
           console.error('Login error:', err)
-          set({ 
+          set({
             error: err instanceof Error ? err.message : 'Login failed',
-            isLoading: false
+            isLoading: false,
           })
         }
       },
 
       logout: async () => {
         set({ isLoading: true, error: null })
-        
+
         try {
           // Make the logout API call
           const { error } = await api.auth.logout()
@@ -73,43 +76,42 @@ export const useUserStore = create<UserState>()(
           }
 
           // Clear other store states
-          useGroupStore.setState({ 
+          useGroupStore.setState({
             groups: new Map(),
             currentGroup: null,
             isLoading: false,
-            error: null 
+            error: null,
           })
 
           useBookStore.setState({
             books: new Map(),
             currentBook: null,
             isLoading: false,
-            error: null
+            error: null,
           })
 
           // Clear user state
-          set({ 
+          set({
             currentUser: null,
             isAuthenticated: false,
             activeGroupId: null,
             isLoading: false,
-            error: null
+            error: null,
           })
 
           // Clear persisted storage
           if (typeof window !== 'undefined') {
             localStorage.removeItem('user-storage')
           }
-
         } catch (err) {
-          set({ 
+          set({
             error: err instanceof Error ? err.message : 'Logout failed',
-            isLoading: false
+            isLoading: false,
           })
         }
       },
 
-      setActiveGroup: (groupId) => set({ activeGroupId: groupId })
+      setActiveGroup: (groupId) => set({ activeGroupId: groupId }),
     }),
     {
       name: 'user-storage',
@@ -117,8 +119,8 @@ export const useUserStore = create<UserState>()(
       partialize: (state) => ({
         currentUser: state.currentUser,
         isAuthenticated: state.isAuthenticated,
-        activeGroupId: state.activeGroupId
-      })
+        activeGroupId: state.activeGroupId,
+      }),
     }
   )
 )

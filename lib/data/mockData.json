@@ -147,17 +147,17 @@
       "coverImage": "/covers/brave-new-world.jpg",
       "totalPages": 268,
       "votes": [
-      {
-        "userId": "u2",
-        "value": 1
-      }
+        {
+          "userId": "u2",
+          "value": 1
+        }
       ],
       "ratings": [
-      {
-        "userId": "u1",
-        "rating": 4,
-        "review": "A fascinating look at a dystopian future."
-      }
+        {
+          "userId": "u1",
+          "rating": 4,
+          "review": "A fascinating look at a dystopian future."
+        }
       ]
     },
     {
@@ -168,11 +168,11 @@
       "totalPages": 281,
       "votes": [],
       "ratings": [
-      {
-        "userId": "u2",
-        "rating": 5,
-        "review": "A powerful and moving story."
-      }
+        {
+          "userId": "u2",
+          "rating": 5,
+          "review": "A powerful and moving story."
+        }
       ]
     },
     {
@@ -182,17 +182,17 @@
       "coverImage": "/covers/the-great-gatsby.jpg",
       "totalPages": 180,
       "votes": [
-      {
-        "userId": "u1",
-        "value": 1
-      }
+        {
+          "userId": "u1",
+          "value": 1
+        }
       ],
       "ratings": [
-      {
-        "userId": "u2",
-        "rating": 4,
-        "review": "A classic tale of the American dream."
-      }
+        {
+          "userId": "u2",
+          "rating": 4,
+          "review": "A classic tale of the American dream."
+        }
       ]
     },
     {
@@ -203,11 +203,11 @@
       "totalPages": 635,
       "votes": [],
       "ratings": [
-      {
-        "userId": "u1",
-        "rating": 3,
-        "review": "A challenging but rewarding read."
-      }
+        {
+          "userId": "u1",
+          "rating": 3,
+          "review": "A challenging but rewarding read."
+        }
       ]
     }
   ],

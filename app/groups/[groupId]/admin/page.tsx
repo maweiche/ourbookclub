@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useGroupStore } from '@/lib/stores/groupStore'
 import GroupAdminPanel from '@/components/Group/Admin/GroupAdminPanel'
-import LoadingSpinner from '@/components/ui/LoadingSpinner'
+import LoadingSpinner from '@/components/ui/loading-spinner'
 
 export default function AdminPage() {
   const params = useParams()
@@ -28,7 +28,7 @@ export default function AdminPage() {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
+      <div className="flex min-h-screen items-center justify-center">
         <LoadingSpinner />
       </div>
     )

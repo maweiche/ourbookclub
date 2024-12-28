@@ -5,10 +5,15 @@ import { useEffect } from 'react'
 import { useGroupStore } from '@/lib/stores/groupStore'
 import { useBookStore } from '@/lib/stores/bookStore'
 import { useUserStore } from '@/lib/stores/userStore'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Progress } from '@/components/ui/progress'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { BookOpen, Book } from 'lucide-react'
 
 const ReadingProgressCard = () => {
-  const activeGroupId = useUserStore(state => state.activeGroupId)
-  const activeGroup = useGroupStore(state => 
+  const activeGroupId = useUserStore((state) => state.activeGroupId)
+  const activeGroup = useGroupStore((state) =>
     activeGroupId ? state.groups.get(activeGroupId) : null
   )
   const { books, fetchBooks, isLoading } = useBookStore()
@@ -20,66 +25,81 @@ const ReadingProgressCard = () => {
         await fetchBooks([activeGroup.currentBookId])
       }
     }
-    
+
     fetchCurrentBook()
   }, [activeGroup?.currentBookId, fetchBooks])
 
-  const currentBook = activeGroup?.currentBookId 
+  const currentBook = activeGroup?.currentBookId
     ? books.get(activeGroup.currentBookId)
     : null
 
-  console.log('Current reading state:', {
-    activeGroupId,
-    currentBookId: activeGroup?.currentBookId,
-    currentBook,
-    allBooks: Array.from(books.entries())
-  })
-
   if (isLoading) {
     return (
-      <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-xl font-semibold mb-4">Current Reading</h2>
-        <div className="animate-pulse flex space-x-4">
-          <div className="w-24 h-36 bg-gray-200 rounded"></div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Current Reading</CardTitle>
+        </CardHeader>
+        <CardContent className="flex space-x-4">
+          <Skeleton className="h-36 w-24 rounded-md" />
           <div className="flex-1 space-y-4">
-            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-4 w-1/2" />
+            <Skeleton className="h-2 w-full" />
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     )
   }
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
-      <h2 className="text-xl font-semibold mb-4">Current Reading</h2>
-      {currentBook ? (
-        <div className="flex items-start space-x-4">
-          <img 
-            src={currentBook.coverImage} 
-            alt={currentBook.title}
-            className="w-24 h-36 object-cover rounded"
-          />
-          <div>
-            <h3 className="font-medium">{currentBook.title}</h3>
-            <p className="text-sm text-gray-600">{currentBook.author}</p>
-            <div className="mt-4">
-              <div className="w-full bg-gray-200 rounded-full h-2.5">
-                <div 
-                  className="bg-blue-600 h-2.5 rounded-full"
-                  style={{ width: '45%' }}
-                />
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <BookOpen className="h-5 w-5" />
+          Current Reading
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        {currentBook ? (
+          <div className="flex items-start space-x-4">
+            <Avatar className="h-36 w-24 rounded-md">
+              <AvatarImage
+                src={currentBook.coverImage}
+                alt={currentBook.title}
+                className="object-cover"
+              />
+              <AvatarFallback className="rounded-md">
+                <Book className="h-8 w-8" />
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex-1 space-y-4">
+              <div>
+                <h3 className="mb-2 font-medium leading-none">
+                  {currentBook.title}
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  {currentBook.author}
+                </p>
               </div>
-              <span className="text-sm text-gray-600 mt-1">
-                Page 150 of {currentBook.totalPages}
-              </span>
+              <div className="space-y-2">
+                <Progress value={45} />
+                <div className="flex justify-between text-sm text-muted-foreground">
+                  <span>Page 150</span>
+                  <span>of {currentBook.totalPages}</span>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      ) : (
-        <p className="text-gray-500">No book currently selected</p>
-      )}
-    </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-6 text-center">
+            <Book className="mb-2 h-10 w-10 text-muted-foreground" />
+            <p className="text-sm text-muted-foreground">
+              No book currently selected
+            </p>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   )
 }
 

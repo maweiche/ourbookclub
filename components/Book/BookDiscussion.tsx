@@ -1,28 +1,23 @@
 // /src/components/Book/BookDiscussion.tsx
 'use client'
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import { useBookStore } from '@/lib/stores/bookStore';
-import { useUserStore } from '@/lib/stores/userStore';
-import { useGroupStore } from '@/lib/stores/groupStore';
-import { Discussion } from '@/lib/types';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'next/navigation'
+import { useBookStore } from '@/lib/stores/bookStore'
+import { useUserStore } from '@/lib/stores/userStore'
+import { useGroupStore } from '@/lib/stores/groupStore'
+import { Discussion } from '@/lib/types'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
 
 const BookDiscussion = () => {
-  const params = useParams();
-  const { currentBook, books } = useBookStore();
-  const currentUser = useUserStore((state) => state.currentUser);
-  const activeGroupId = useUserStore((state) => state.activeGroupId);
-  const [discussions, setDiscussions] = useState<Discussion[]>([]);
-  const [newComment, setNewComment] = useState('');
-  const [currentPage, setCurrentPage] = useState(0);
+  const params = useParams()
+  const { currentBook, books } = useBookStore()
+  const currentUser = useUserStore((state) => state.currentUser)
+  const activeGroupId = useUserStore((state) => state.activeGroupId)
+  const [discussions, setDiscussions] = useState<Discussion[]>([])
+  const [newComment, setNewComment] = useState('')
+  const [currentPage, setCurrentPage] = useState(0)
 
   // Load mock discussions (in a real app, this would be an API call)
   useEffect(() => {
@@ -34,72 +29,77 @@ const BookDiscussion = () => {
           bookId: currentBook.id,
           groupId: activeGroupId || '',
           chapter: 1,
-          prompt: "What are your initial thoughts about the book so far?",
+          prompt: 'What are your initial thoughts about the book so far?',
           comments: [
             {
               id: 'c1',
               userId: 'u1',
-              content: "A masterpiece of science fiction! The world-building is incredible.",
-              timestamp: new Date().toISOString()
-            }
-          ]
-        }
-      ];
-      setDiscussions(mockDiscussions);
+              content:
+                'A masterpiece of science fiction! The world-building is incredible.',
+              timestamp: new Date().toISOString(),
+            },
+          ],
+        },
+      ]
+      setDiscussions(mockDiscussions)
     }
-  }, [currentBook, activeGroupId]);
+  }, [currentBook, activeGroupId])
 
   const handleAddComment = () => {
-    if (!newComment.trim() || !currentUser || !currentBook) return;
+    if (!newComment.trim() || !currentUser || !currentBook) return
 
     const comment = {
       id: `c${Date.now()}`,
       userId: currentUser.id,
       content: newComment,
       timestamp: new Date().toISOString(),
-    };
+    }
 
     // Update the first discussion with the new comment
     if (discussions.length > 0) {
-      const updatedDiscussions = discussions.map(discussion => ({
+      const updatedDiscussions = discussions.map((discussion) => ({
         ...discussion,
-        comments: [...discussion.comments, comment]
-      }));
-      setDiscussions(updatedDiscussions);
+        comments: [...discussion.comments, comment],
+      }))
+      setDiscussions(updatedDiscussions)
     }
 
-    setNewComment('');
-  };
+    setNewComment('')
+  }
 
   const handleUpdateProgress = () => {
     // In a real app, we'd update this in the backend
-    console.log(`Updated progress: ${currentPage} pages`);
-  };
+    console.log(`Updated progress: ${currentPage} pages`)
+  }
 
   if (!currentBook) {
     return (
-      <div className="text-center py-8">
+      <div className="py-8 text-center">
         <p>Loading book details...</p>
       </div>
-    );
+    )
   }
 
-  const progressPercentage = (currentPage / currentBook.totalPages) * 100;
+  const progressPercentage = (currentPage / currentBook.totalPages) * 100
 
   return (
     <div className="space-y-6">
       {/* Book Details & Reading Progress */}
       <Card className="bg-white">
         <CardHeader className="space-y-2">
-          <CardTitle className="flex justify-between items-center">
+          <CardTitle className="flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold">{currentBook.title}</h2>
-              <p className="text-gray-600 text-sm mt-1">{currentBook.author}</p>
+              <p className="mt-1 text-sm text-gray-600">{currentBook.author}</p>
             </div>
             {currentBook.ratings.length > 0 && (
               <div className="text-sm text-gray-600">
-                Average Rating: {(currentBook.ratings.reduce((acc, r) => acc + r.rating, 0) / 
-                  currentBook.ratings.length).toFixed(1)}/5
+                Average Rating:{' '}
+                {(
+                  currentBook.ratings.reduce((acc, r) => acc + r.rating, 0) /
+                  currentBook.ratings.length
+                ).toFixed(1)}
+                /5
               </div>
             )}
           </CardTitle>
@@ -118,16 +118,13 @@ const BookDiscussion = () => {
               <span className="text-gray-600">
                 of {currentBook.totalPages} pages
               </span>
-              <Button
-                onClick={handleUpdateProgress}
-                variant="secondary"
-              >
+              <Button onClick={handleUpdateProgress} variant="secondary">
                 Update Progress
               </Button>
             </div>
-            <div className="h-2 w-full bg-gray-200 rounded-full">
+            <div className="h-2 w-full rounded-full bg-gray-200">
               <div
-                className="h-2 bg-blue-600 rounded-full"
+                className="h-2 rounded-full bg-blue-600"
                 style={{ width: `${progressPercentage}%` }}
               />
             </div>
@@ -138,7 +135,7 @@ const BookDiscussion = () => {
       {/* Discussions */}
       <div className="space-y-6">
         <h2 className="text-2xl font-bold">Discussion</h2>
-        
+
         {discussions.map((discussion) => (
           <Card key={discussion.id} className="bg-white">
             <CardContent className="pt-6">
@@ -150,10 +147,15 @@ const BookDiscussion = () => {
 
               <div className="space-y-6">
                 {discussion.comments.map((comment) => (
-                  <div key={comment.id} className="border-b border-gray-200 pb-4">
+                  <div
+                    key={comment.id}
+                    className="border-b border-gray-200 pb-4"
+                  >
                     <div className="flex items-start justify-between">
                       <span className="font-medium">
-                        {comment.userId === currentUser?.id ? 'You' : 'Other Reader'}
+                        {comment.userId === currentUser?.id
+                          ? 'You'
+                          : 'Other Reader'}
                       </span>
                       <span className="text-sm text-gray-500">
                         {new Date(comment.timestamp).toLocaleDateString()}
@@ -185,7 +187,7 @@ const BookDiscussion = () => {
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default BookDiscussion;
+export default BookDiscussion

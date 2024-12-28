@@ -14,22 +14,20 @@ class MockDatabase {
   getData(collection: keyof typeof initialMockData, params?: any) {
     console.log('MockDB getData called:', { collection, params })
     const data = deepClone(this.data[collection])
-    
+
     if (collection === 'groups' && params?.ids) {
       // Ensure ids parameter is always an array
-      const groupIds = Array.isArray(params.ids) 
-        ? params.ids 
-        : [params.ids]
+      const groupIds = Array.isArray(params.ids) ? params.ids : [params.ids]
 
       console.log('Filtering groups by IDs:', groupIds)
       // Filter groups and log the result
-      const filteredGroups = data.filter((group: any) => 
+      const filteredGroups = data.filter((group: any) =>
         groupIds.includes(group.id)
       )
       console.log('Filtered groups result:', filteredGroups)
       return filteredGroups
     }
-    
+
     if (collection === 'users' && params?.id) {
       return data.find((user: any) => user.id === params.id)
     }
@@ -59,7 +57,7 @@ class MockDatabase {
 
 console.log('mockData import check:', {
   mockData: initialMockData,
-  groupsCount: initialMockData.groups.length
+  groupsCount: initialMockData.groups.length,
 })
 
 export const mockDb = new MockDatabase()

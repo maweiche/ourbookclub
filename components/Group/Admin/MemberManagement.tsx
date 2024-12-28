@@ -21,7 +21,7 @@ import {
 import { UserPlus, Shield, Trash2 } from 'lucide-react'
 
 interface MemberManagementProps {
-  group: Group;
+  group: Group
 }
 
 const MemberManagement = ({ group }: MemberManagementProps) => {
@@ -29,16 +29,16 @@ const MemberManagement = ({ group }: MemberManagementProps) => {
   const [newMemberEmail, setNewMemberEmail] = useState('')
 
   const handleRemoveMember = async (userId: string) => {
-    const updatedMemberIds = group.memberIds.filter(id => id !== userId)
+    const updatedMemberIds = group.memberIds.filter((id) => id !== userId)
     await updateGroup(group.id, {
-      memberIds: updatedMemberIds
+      memberIds: updatedMemberIds,
     })
   }
 
   const handlePromoteToAdmin = async (userId: string) => {
     const updatedAdminIds = [...group.adminIds, userId]
     await updateGroup(group.id, {
-      adminIds: updatedAdminIds
+      adminIds: updatedAdminIds,
     })
   }
 
@@ -50,7 +50,7 @@ const MemberManagement = ({ group }: MemberManagementProps) => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold mb-4">Add New Member</h2>
+        <h2 className="mb-4 text-lg font-semibold">Add New Member</h2>
         <div className="flex space-x-4">
           <Input
             type="email"
@@ -59,14 +59,14 @@ const MemberManagement = ({ group }: MemberManagementProps) => {
             placeholder="Enter email address"
           />
           <Button>
-            <UserPlus className="h-4 w-4 mr-2" />
+            <UserPlus className="mr-2 h-4 w-4" />
             Add Member
           </Button>
         </div>
       </div>
 
       <div>
-        <h2 className="text-lg font-semibold mb-4">Current Members</h2>
+        <h2 className="mb-4 text-lg font-semibold">Current Members</h2>
         <Table>
           <TableHeader>
             <TableRow>
@@ -81,7 +81,10 @@ const MemberManagement = ({ group }: MemberManagementProps) => {
                 <TableCell className="font-medium">{userId}</TableCell>
                 <TableCell>
                   {group.adminIds.includes(userId) ? (
-                    <Badge variant="secondary" className="bg-blue-100 text-blue-700">
+                    <Badge
+                      variant="secondary"
+                      className="bg-blue-100 text-blue-700"
+                    >
                       Admin
                     </Badge>
                   ) : (
@@ -96,7 +99,7 @@ const MemberManagement = ({ group }: MemberManagementProps) => {
                         size="sm"
                         onClick={() => handlePromoteToAdmin(userId)}
                       >
-                        <Shield className="h-4 w-4 mr-2" />
+                        <Shield className="mr-2 h-4 w-4" />
                         Make Admin
                       </Button>
                     )}
@@ -105,7 +108,7 @@ const MemberManagement = ({ group }: MemberManagementProps) => {
                       size="sm"
                       onClick={() => handleRemoveMember(userId)}
                     >
-                      <Trash2 className="h-4 w-4 mr-2" />
+                      <Trash2 className="mr-2 h-4 w-4" />
                       Remove
                     </Button>
                   </div>
@@ -116,7 +119,7 @@ const MemberManagement = ({ group }: MemberManagementProps) => {
         </Table>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default MemberManagement;
+export default MemberManagement

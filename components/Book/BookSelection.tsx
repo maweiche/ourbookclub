@@ -1,9 +1,9 @@
 // /src/components/Book/BookSelection.tsx
 'use client'
-import React, { useEffect, useState } from 'react';
-import { useBookStore } from '@/lib/stores/bookStore';
-import { useGroupStore } from '@/lib/stores/groupStore';
-import { useUserStore } from '@/lib/stores/userStore';
+import React, { useEffect, useState } from 'react'
+import { useBookStore } from '@/lib/stores/bookStore'
+import { useGroupStore } from '@/lib/stores/groupStore'
+import { useUserStore } from '@/lib/stores/userStore'
 import {
   Dialog,
   DialogContent,
@@ -11,75 +11,75 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
+} from '@/components/ui/dialog'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { ThumbsUp } from 'lucide-react';
+} from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { ThumbsUp } from 'lucide-react'
 
 const BookSelection = () => {
-  const [open, setOpen] = useState(false);
-  const [newBook, setNewBook] = useState({ title: '', author: '' });
-  
-  const currentUser = useUserStore((state) => state.currentUser);
-  const activeGroupId = useUserStore((state) => state.activeGroupId);
-  const currentGroup = useGroupStore((state) => 
+  const [open, setOpen] = useState(false)
+  const [newBook, setNewBook] = useState({ title: '', author: '' })
+
+  const currentUser = useUserStore((state) => state.currentUser)
+  const activeGroupId = useUserStore((state) => state.activeGroupId)
+  const currentGroup = useGroupStore((state) =>
     activeGroupId ? state.groups.get(activeGroupId) : null
-  );
-  const { books, fetchBooks, addVote, isLoading } = useBookStore();
+  )
+  const { books, fetchBooks, addVote, isLoading } = useBookStore()
 
   useEffect(() => {
     const fetchSuggestedBooks = async () => {
       if (currentGroup?.suggestedBooks) {
-        console.log('Fetching suggested books:', currentGroup.suggestedBooks);
-        await fetchBooks(currentGroup.suggestedBooks);
+        console.log('Fetching suggested books:', currentGroup.suggestedBooks)
+        await fetchBooks(currentGroup.suggestedBooks)
       }
-    };
+    }
 
-    fetchSuggestedBooks();
-  }, [currentGroup?.suggestedBooks, fetchBooks]);
+    fetchSuggestedBooks()
+  }, [currentGroup?.suggestedBooks, fetchBooks])
 
   const handleSubmitBook = async () => {
-    if (!newBook.title || !newBook.author) return;
-    
+    if (!newBook.title || !newBook.author) return
+
     // In a real app, you would make an API call here
-    console.log('Suggesting new book:', newBook);
-    
+    console.log('Suggesting new book:', newBook)
+
     // Reset form and close modal
-    setNewBook({ title: '', author: '' });
-    setOpen(false);
-  };
+    setNewBook({ title: '', author: '' })
+    setOpen(false)
+  }
 
   const handleVote = (bookId: string) => {
-    if (!currentUser) return;
-    addVote(bookId, currentUser.id, 1);
-  };
+    if (!currentUser) return
+    addVote(bookId, currentUser.id, 1)
+  }
 
   // Helper function to check if user has voted for a book
   const hasVoted = (bookId: string) => {
-    const book = books.get(bookId);
-    return book?.votes.some(vote => vote.userId === currentUser?.id);
-  };
+    const book = books.get(bookId)
+    return book?.votes.some((vote) => vote.userId === currentUser?.id)
+  }
 
   console.log('Current state:', {
     booksSize: books.size,
     suggestedBooks: currentGroup?.suggestedBooks,
-    allBooks: Array.from(books.entries())
-  });
+    allBooks: Array.from(books.entries()),
+  })
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-[200px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
+      <div className="flex min-h-[200px] items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-500" />
       </div>
-    );
+    )
   }
 
   return (
@@ -105,7 +105,9 @@ const BookSelection = () => {
                 <Input
                   id="title"
                   value={newBook.title}
-                  onChange={(e) => setNewBook({ ...newBook, title: e.target.value })}
+                  onChange={(e) =>
+                    setNewBook({ ...newBook, title: e.target.value })
+                  }
                   placeholder="Enter book title"
                 />
               </div>
@@ -114,11 +116,13 @@ const BookSelection = () => {
                 <Input
                   id="author"
                   value={newBook.author}
-                  onChange={(e) => setNewBook({ ...newBook, author: e.target.value })}
+                  onChange={(e) =>
+                    setNewBook({ ...newBook, author: e.target.value })
+                  }
                   placeholder="Enter author name"
                 />
               </div>
-              <Button 
+              <Button
                 className="w-full bg-blue-500 hover:bg-blue-600"
                 onClick={handleSubmitBook}
                 disabled={!newBook.title || !newBook.author}
@@ -151,7 +155,7 @@ const BookSelection = () => {
                     </span>
                     {currentUser && (
                       <Button
-                        variant={hasVoted(book.id) ? "secondary" : "outline"}
+                        variant={hasVoted(book.id) ? 'secondary' : 'outline'}
                         size="sm"
                         onClick={() => handleVote(book.id)}
                         disabled={hasVoted(book.id)}
@@ -164,7 +168,11 @@ const BookSelection = () => {
                   </div>
                   {book.ratings.length > 0 && (
                     <div className="text-sm text-gray-600">
-                      Average Rating: {(book.ratings.reduce((acc, r) => acc + r.rating, 0) / book.ratings.length).toFixed(1)}
+                      Average Rating:{' '}
+                      {(
+                        book.ratings.reduce((acc, r) => acc + r.rating, 0) /
+                        book.ratings.length
+                      ).toFixed(1)}
                     </div>
                   )}
                 </div>
@@ -174,7 +182,7 @@ const BookSelection = () => {
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default BookSelection;
+export default BookSelection

@@ -28,5 +28,10 @@ export interface BookState {
   fetchBooks: (bookIds: string[]) => Promise<void>
   setCurrentBook: (bookId: string) => void
   addVote: (bookId: string, userId: string, value: number) => void
-  addRating: (bookId: string, userId: string, rating: number, review?: string) => void
+  addRating: (
+    bookId: string,
+    userId: string,
+    rating: number,
+    review?: string
+  ) => void
 }

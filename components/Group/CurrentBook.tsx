@@ -4,7 +4,13 @@
 import { useEffect } from 'react'
 import { Group } from '@/lib/types'
 import { useBookStore } from '@/lib/stores/bookStore'
-import LoadingSpinner from '@/components/ui/LoadingSpinner'
+import LoadingSpinner from '@/components/ui/loading-spinner'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Star } from 'lucide-react'
 
 interface CurrentBookProps {
   group: Group
@@ -21,74 +27,121 @@ const CurrentBook = ({ group }: CurrentBookProps) => {
 
   if (isLoading) {
     return (
-      <div className="rounded-lg bg-white p-6 shadow">
-        <h2 className="mb-4 text-xl font-semibold">Current Book</h2>
-        <LoadingSpinner />
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Current Book</CardTitle>
+        </CardHeader>
+        <CardContent className="flex justify-center">
+          <LoadingSpinner />
+        </CardContent>
+      </Card>
     )
   }
 
-  const currentBook = group.currentBookId ? books.get(group.currentBookId) : null
+  const currentBook = group.currentBookId
+    ? books.get(group.currentBookId)
+    : null
 
   if (!currentBook) {
     return (
-      <div className="rounded-lg bg-white p-6 shadow">
-        <h2 className="mb-4 text-xl font-semibold">Current Book</h2>
-        <p className="text-gray-500">No book currently selected</p>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Current Book</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-muted-foreground">No book currently selected</p>
+        </CardContent>
+      </Card>
     )
   }
 
-  const averageRating = currentBook.ratings.length > 0
-    ? (currentBook.ratings.reduce((acc, r) => acc + r.rating, 0) / currentBook.ratings.length).toFixed(1)
-    : null
+  const averageRating =
+    currentBook.ratings.length > 0
+      ? (
+          currentBook.ratings.reduce((acc, r) => acc + r.rating, 0) /
+          currentBook.ratings.length
+        ).toFixed(1)
+      : null
 
   return (
-    <div className="rounded-lg bg-white p-6 shadow">
-      <h2 className="mb-4 text-xl font-semibold">Current Book</h2>
-      <div className="flex items-start space-x-6">
-        <img
-          src={currentBook.coverImage}
-          alt={currentBook.title}
-          className="h-48 w-32 rounded object-cover"
-        />
-        <div>
-          <h3 className="text-lg font-medium">{currentBook.title}</h3>
-          <p className="text-gray-600">{currentBook.author}</p>
-          <div className="mt-4 space-y-2">
-            <div className="flex items-center">
-              <span className="text-gray-500">Average Rating:</span>
-              <span className="ml-2 font-medium">
-                {averageRating ? `${averageRating}/5` : 'No ratings yet'}
-              </span>
+    <Card>
+      <CardHeader>
+        <CardTitle>Current Book</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex gap-6">
+          <Avatar className="h-48 w-32 rounded-md">
+            <AvatarImage
+              src={currentBook.coverImage}
+              alt={currentBook.title}
+              className="object-cover"
+            />
+            <AvatarFallback className="rounded-md">
+              {currentBook.title.substring(0, 2)}
+            </AvatarFallback>
+          </Avatar>
+
+          <div className="flex-1 space-y-4">
+            <div>
+              <h3 className="text-lg font-medium leading-none">
+                {currentBook.title}
+              </h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {currentBook.author}
+              </p>
             </div>
+
+            <div className="flex items-center gap-2">
+              {averageRating ? (
+                <Badge variant="secondary" className="flex items-center gap-1">
+                  <Star className="h-3 w-3" />
+                  {averageRating}/5
+                </Badge>
+              ) : (
+                <Badge variant="outline">No ratings yet</Badge>
+              )}
+            </div>
+
             {currentBook.ratings.length > 0 && (
-              <div>
-                <h4 className="mb-2 font-medium">Recent Reviews</h4>
-                <div className="space-y-3">
-                  {currentBook.ratings
-                    .filter((r) => r.review)
-                    .slice(0, 3)
-                    .map((rating) => (
-                      <div
-                        key={`${rating.userId}-${rating.rating}`}
-                        className="rounded-md bg-gray-50 p-3"
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium">Rating: {rating.rating}/5</span>
-                        </div>
-                        {rating.review && (
-                          <p className="mt-1 text-sm text-gray-600">{rating.review}</p>
-                        )}
-                      </div>
-                    ))}
+              <>
+                <Separator />
+                <div>
+                  <h4 className="mb-3 text-sm font-medium leading-none">
+                    Recent Reviews
+                  </h4>
+                  <ScrollArea className="h-[200px] w-full rounded-md border p-4">
+                    <div className="space-y-4">
+                      {currentBook.ratings
+                        .filter((r) => r.review)
+                        .slice(0, 3)
+                        .map((rating) => (
+                          <div
+                            key={`${rating.userId}-${rating.rating}`}
+                            className="space-y-2"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Badge>
+                                <Star className="mr-1 h-3 w-3" />
+                                {rating.rating}/5
+                              </Badge>
+                            </div>
+                            {rating.review && (
+                              <p className="text-sm text-muted-foreground">
+                                {rating.review}
+                              </p>
+                            )}
+                            <Separator />
+                          </div>
+                        ))}
+                    </div>
+                  </ScrollArea>
                 </div>
-              </div>
+              </>
             )}
           </div>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   )
 }
 

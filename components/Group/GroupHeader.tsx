@@ -33,11 +33,7 @@ const GroupHeader = ({ group }: GroupHeaderProps) => {
             <p className="text-sm text-muted-foreground">{group.description}</p>
           </div>
           {isAdmin && (
-            <Button 
-              onClick={handleManageGroup}
-              variant="default"
-              size="sm"
-            >
+            <Button onClick={handleManageGroup} variant="default" size="sm">
               Manage Group
             </Button>
           )}
@@ -46,11 +42,13 @@ const GroupHeader = ({ group }: GroupHeaderProps) => {
       <CardContent>
         <div className="flex items-center space-x-4">
           <Badge variant="secondary" className="px-4 py-1">
-            <span className="font-medium mr-1">{group.memberIds.length}</span> 
+            <span className="mr-1 font-medium">{group.memberIds.length}</span>
             members
           </Badge>
           <Badge variant="secondary" className="px-4 py-1">
-            <span className="font-medium mr-1">{group.readingHistory.length}</span> 
+            <span className="mr-1 font-medium">
+              {group.readingHistory.length}
+            </span>
             books read
           </Badge>
           {group.currentBookId && (
